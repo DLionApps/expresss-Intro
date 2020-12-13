@@ -31,16 +31,20 @@ module.exports = (app) => {
   });
 
   router.get("/users", (req, res) => {
-    UserModel.find((err, data) => {
-      if (err) {
-        res.status(500).send({
-          statusCode: 500,
-          message: err,
-        });
-      } else {
-        res.status(200).send(data);
-      }
-    });
+    try {
+      UserModel.find((err, data) => {
+        if (err) {
+          res.status(500).send({
+            statusCode: 500,
+            message: err,
+          });
+        } else {
+          res.status(200).send(data);
+        }
+      });
+    } catch (ex) {
+      console.log(ex);
+    }
   });
 
   router.get("/user/:id", (req, res) => {
