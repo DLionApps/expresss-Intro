@@ -62,35 +62,23 @@ module.exports = (app) => {
 
   router.put("/user/:id", (req, res) => {
     const userObj = req.body;
-    const query = UserModel.where({ _id: req.params.id });
-    query.findOne((err, user) => {
-      if (err) {
-        console.log(err);
+    UserModel.findOneAndUpdate(
+      { _id: req.params.id },
+      userObj,
+      {
+        new: true,
+      },
+      (err, data) => {
+        if (err) {
+          res.status(500).send({
+            statusCode: 500,
+            message: err,
+          });
+        } else {
+          res.status(200).send(data);
+        }
       }
-      if (user !== null) {
-        UserModel.findOneAndUpdate(
-          { _id: req.params.id },
-          userObj,
-          {
-            new: true,
-          },
-          (err, data) => {
-            if (err) {
-              res.status(500).send({
-                statusCode: 500,
-                message: err,
-              });
-            } else {
-              res.status(200).send(data);
-            }
-          }
-        );
-      } else {
-        res.status(403).send({
-          message: "User not available",
-        });
-      }
-    });
+    );
   });
 
   router.delete("/user/:id", (req, res) => {
